@@ -7,7 +7,7 @@ pub struct KeyBoard {
     pub keys: [bool; 16],
     keys_mapping: HashMap<Key, usize>,
     pub is_key_push: bool,
-    pub last_key_down: Option<usize>
+    pub last_key_down: Option<usize>,
 }
 
 impl KeyBoard {
@@ -31,13 +31,18 @@ impl KeyBoard {
         keys.insert(Key::B, 0xE);
         keys.insert(Key::Enter, 0xF);
 
-        Self { keys: [false; 16], keys_mapping: keys, is_key_push: false, last_key_down: None }
+        Self {
+            keys: [false; 16],
+            keys_mapping: keys,
+            is_key_push: false,
+            last_key_down: None,
+        }
     }
 
     pub fn load_rom_keymapping(&mut self, rom: String) {
         if rom == String::from("cave") {
             self.keys_mapping.clear();
-            
+
             self.keys_mapping.insert(Key::Z, 0x2); // Up
             self.keys_mapping.insert(Key::Q, 0x4); // Left
             self.keys_mapping.insert(Key::S, 0x8); // Down 
@@ -64,7 +69,7 @@ impl KeyBoard {
             self.keys_mapping.insert(Key::S, 0x4); // Down
         } else if rom == String::from("missile") || rom == String::from("airplane") {
             self.keys_mapping.clear();
-            
+
             self.keys_mapping.insert(Key::Space, 0x8); // Fire
         } else if rom == String::from("tank") {
             self.keys_mapping.clear();

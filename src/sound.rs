@@ -1,5 +1,5 @@
+use rodio::MixerDeviceSink;
 use std::{fs::File, io::BufReader};
-use rodio::{MixerDeviceSink};
 
 #[derive(Debug)]
 pub struct Sound {
@@ -8,13 +8,10 @@ pub struct Sound {
 
 impl Sound {
     pub fn new() -> Self {
+        let sink_handle =
+            rodio::DeviceSinkBuilder::open_default_sink().expect("open default audio stream");
 
-        let sink_handle = rodio::DeviceSinkBuilder::open_default_sink()
-        .expect("open default audio stream");
-
-        Self {
-            sink_handle
-        }
+        Self { sink_handle }
     }
 
     pub fn play_beep(&self) {

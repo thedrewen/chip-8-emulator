@@ -65,7 +65,6 @@ impl Screen {
 
     pub fn play(&mut self) {
         while self.window.is_open() && !self.window.is_key_down(Key::Escape) {
-
             self.computer.keyboard.handle(&self.window);
             self.computer.play();
 

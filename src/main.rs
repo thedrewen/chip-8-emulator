@@ -1,10 +1,10 @@
 use std::env::args;
 
-use crate::{screen::Screen};
+use crate::screen::Screen;
 
 mod computer;
-mod screen;
 mod keyboard;
+mod screen;
 mod sound;
 
 fn main() {

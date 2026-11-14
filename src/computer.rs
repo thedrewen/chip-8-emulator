@@ -1,6 +1,4 @@
-use std::{
-    fs
-};
+use std::fs;
 
 use crate::{keyboard::KeyBoard, sound::Sound};
 
@@ -18,12 +16,12 @@ pub struct Computer {
     stack_pointer: u8,
     delay_timer: u8,
     sound_timer: u8,
-    
+
     pub screen: [[bool; 64]; 32],
     pub keyboard: KeyBoard,
     pub sound: Sound,
 
-    old_version: bool
+    old_version: bool,
 }
 
 impl Computer {
@@ -42,8 +40,8 @@ impl Computer {
             screen: [[false; 64]; 32],
             keyboard: KeyBoard::new(),
             sound: Sound::new(),
-            
-            old_version: true
+
+            old_version: true,
         }
     }
 
@@ -64,13 +62,12 @@ impl Computer {
     }
 
     pub fn insert_rom(&mut self, file: String, rom: &str) {
-        
         let new_version_games = ["tictac", "brix", "tank", "squash"];
         if new_version_games.contains(&rom) {
             self.old_version = false;
         }
 
-        let r = fs::read(&file).expect("Unable to read the file.");
+        let r: Vec<u8> = fs::read(&file).expect("Unable to read the file.");
 
         if r.len() > 3584 {
             panic!("The file is too large.");
@@ -119,7 +116,7 @@ impl Computer {
 
                     let x = self.registers[op_x] % 64;
                     let y = self.registers[op_y] % 32;
-                    
+
                     let frame =
                         &self.memory[self.index_register..(self.index_register + op_n as usize)];
 
@@ -137,7 +134,9 @@ impl Computer {
                                         ^ bit)
                                         == 1;
 
-                                if default_v != self.screen[row + y as usize][col + x as usize] && default_v {
+                                if default_v != self.screen[row + y as usize][col + x as usize]
+                                    && default_v
+                                {
                                     self.registers[0xF] = 1;
                                 }
                             }
@@ -302,7 +301,8 @@ impl Computer {
                         self.sound_timer = self.registers[op_x];
                     }
                     0x29 => {
-                        self.index_register = FONTS_MIN_ADDR + (self.registers[op_x] as usize & 0xF) * 5;
+                        self.index_register =
+                            FONTS_MIN_ADDR + (self.registers[op_x] as usize & 0xF) * 5;
                     }
                     0x55 => {
                         let v = &self.registers[0x0..=op_x];
