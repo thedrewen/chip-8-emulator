@@ -33,7 +33,7 @@ impl Screen {
         let mut rom_path = String::from("games/");
         rom_path.push_str(&rom);
         rom_path.push_str(".ch8");
-        computer.insert_rom(rom_path);
+        computer.insert_rom(rom_path, &rom);
         computer.keyboard.load_rom_keymapping(rom);
 
         Self {
@@ -65,7 +65,7 @@ impl Screen {
 
     pub fn play(&mut self) {
         while self.window.is_open() && !self.window.is_key_down(Key::Escape) {
-            
+
             self.computer.keyboard.handle(&self.window);
             self.computer.play();
 

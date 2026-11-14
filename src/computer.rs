@@ -21,7 +21,9 @@ pub struct Computer {
     
     pub screen: [[bool; 64]; 32],
     pub keyboard: KeyBoard,
-    pub sound: Sound
+    pub sound: Sound,
+
+    old_version: bool
 }
 
 impl Computer {
@@ -39,7 +41,9 @@ impl Computer {
             sound_timer: 0,
             screen: [[false; 64]; 32],
             keyboard: KeyBoard::new(),
-            sound: Sound::new()
+            sound: Sound::new(),
+            
+            old_version: true
         }
     }
 
@@ -59,7 +63,13 @@ impl Computer {
         memory
     }
 
-    pub fn insert_rom(&mut self, file: String) {
+    pub fn insert_rom(&mut self, file: String, rom: &str) {
+        
+        let new_version_games = ["tictac", "brix", "tank", "squash"];
+        if new_version_games.contains(&rom) {
+            self.old_version = false;
+        }
+
         let r = fs::read(&file).expect("Unable to read the file.");
 
         if r.len() > 3584 {
@@ -171,12 +181,21 @@ impl Computer {
                     }
                     1 => {
                         self.registers[op_x] |= self.registers[op_y];
+                        if self.old_version {
+                            self.registers[0xF] = 0;
+                        }
                     }
                     2 => {
                         self.registers[op_x] &= self.registers[op_y];
+                        if self.old_version {
+                            self.registers[0xF] = 0;
+                        }
                     }
                     3 => {
                         self.registers[op_x] ^= self.registers[op_y];
+                        if self.old_version {
+                            self.registers[0xF] = 0;
+                        }
                     }
                     4 => {
                         let default_value = self.registers[op_x];
@@ -199,9 +218,10 @@ impl Computer {
                         }
                     }
                     6 => {
-                        let default_bit = self.registers[op_y] & 0x1;
-                        self.registers[op_x] = self.registers[op_y] >> 0x1;
-                        self.registers[0xF] = default_bit;
+                        let src = if self.old_version { op_y } else { op_x };
+                        let value = self.registers[src];
+                        self.registers[op_x] = value >> 1;
+                        self.registers[0xF] = value & 0x1;
                     }
                     7 => {
                         let default_value = self.registers[op_x];
@@ -214,9 +234,10 @@ impl Computer {
                         }
                     }
                     0xE => {
-                        let default_bit = self.registers[op_y] & 0x1;
-                        self.registers[op_x] = self.registers[op_y] << 0x1;
-                        self.registers[0xF] = default_bit;
+                        let src = if self.old_version { op_y } else { op_x };
+                        let value = self.registers[src];
+                        self.registers[op_x] = value << 1;
+                        self.registers[0xF] = (value >> 7) & 0x1;
                     }
                     _ => {
                         println!("OpCode : {opcode:04X}");
@@ -250,13 +271,13 @@ impl Computer {
                 },
                 0xE => match op_nn {
                     0x9E => {
-                        println!("Ps : {:04X}", self.registers[op_x]);
+                        // println!("Ps : {:04X}", self.registers[op_x]);
                         if self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }
                     }
                     0xA1 => {
-                        println!("Rl : {:04X}", self.registers[op_x]);
+                        // println!("Rl : {:04X}", self.registers[op_x]);
                         if !self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }
@@ -290,11 +311,18 @@ impl Computer {
                         let m =
                             &mut self.memory[self.index_register..(self.index_register + v.len())];
                         m.copy_from_slice(v);
+                        if self.old_version {
+                            self.index_register += op_x + 1;
+                        }
                     }
                     0x65 => {
                         let v = &mut self.registers[0x0..=op_x];
                         let m = &self.memory[self.index_register..(self.index_register + v.len())];
                         v.copy_from_slice(m);
+
+                        if self.old_version {
+                            self.index_register += op_x + 1;
+                        }
                     }
                     0x33 => {
                         let v = self.registers[op_x];
@@ -344,7 +372,6 @@ impl Computer {
             self.delay_timer -= 1;
         }
         if self.sound_timer > 0 {
-            println!("SOUND");
             self.sound.play_beep();
             self.sound_timer -= 1;
         }

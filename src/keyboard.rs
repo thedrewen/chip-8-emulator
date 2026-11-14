@@ -54,9 +54,17 @@ impl KeyBoard {
             self.keys_mapping.remove(&Key::Q);
             self.keys_mapping.insert(Key::Z, 0x1); // Up
             self.keys_mapping.insert(Key::S, 0x4); // Down
-        } else if rom == String::from("missile") {
+        } else if rom == String::from("missile") || rom == String::from("airplane") {
             self.keys_mapping.remove(&Key::X);
             self.keys_mapping.insert(Key::Space, 0x8); // Fire
+        } else if rom == String::from("tank") {
+            self.keys_mapping.remove(&Key::S);
+            self.keys_mapping.remove(&Key::Z);
+            self.keys_mapping.remove(&Key::X);
+
+            self.keys_mapping.insert(Key::Z, 0x8); // Up (ZQSD)
+            self.keys_mapping.insert(Key::S, 0x2); // Down
+            self.keys_mapping.insert(Key::Space, 0x5); // Fire
         }
     }
 

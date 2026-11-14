@@ -18,7 +18,7 @@ impl Sound {
     }
 
     pub fn play_beep(&self) {
-        let beep_file = BufReader::new(File::open("assets/beep.mp3").unwrap());
+        let beep_file = BufReader::new(File::open("assets/beep.wav").unwrap());
         let player = rodio::play(&self.sink_handle.mixer(), beep_file).unwrap();
         player.detach();
     }
