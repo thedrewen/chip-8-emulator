@@ -250,13 +250,13 @@ impl Computer {
                 },
                 0xE => match op_nn {
                     0x9E => {
-                        //println!("Ps : {:04X}", self.registers[op_x]);
+                        println!("Ps : {:04X}", self.registers[op_x]);
                         if self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }
                     }
                     0xA1 => {
-                        //println!("Rl : {:04X}", self.registers[op_x]);
+                        println!("Rl : {:04X}", self.registers[op_x]);
                         if !self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }
@@ -305,6 +305,16 @@ impl Computer {
                         self.memory[self.index_register] = c;
                         self.memory[self.index_register + 1] = d;
                         self.memory[self.index_register + 2] = u;
+                    }
+                    0xA => {
+                        if self.keyboard.is_key_push {
+                            self.registers[op_x] = self.keyboard.last_key_down.unwrap() as u8;
+                        } else {
+                            self.pc -= 2;
+                        }
+                    }
+                    0x1E => {
+                        self.index_register += self.registers[op_x] as usize;
                     }
                     _ => {
                         println!("OpCode : {opcode:04X}");
