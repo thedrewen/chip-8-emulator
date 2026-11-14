@@ -143,8 +143,6 @@ impl Computer {
                             }
                         }
                     }
-
-                    // self.display_screen();
                 }
                 0x3 => {
                     if self.registers[op_x] == op_nn {
@@ -271,13 +269,13 @@ impl Computer {
                 },
                 0xE => match op_nn {
                     0x9E => {
-                        // println!("Ps : {:04X}", self.registers[op_x]);
+                        println!("Ps : {:04X}", self.registers[op_x]);
                         if self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }
                     }
                     0xA1 => {
-                        // println!("Rl : {:04X}", self.registers[op_x]);
+                        println!("Rl : {:04X}", self.registers[op_x]);
                         if !self.keyboard.keys[self.registers[op_x] as usize] {
                             self.pc += 2;
                         }

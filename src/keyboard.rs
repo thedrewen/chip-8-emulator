@@ -13,6 +13,7 @@ pub struct KeyBoard {
 impl KeyBoard {
     pub fn new() -> Self {
         let mut keys = HashMap::new();
+        keys.insert(Key::LeftCtrl, 0x0);
         keys.insert(Key::A, 0x1);
         keys.insert(Key::Z, 0x2);
         keys.insert(Key::E, 0x3);
@@ -35,36 +36,73 @@ impl KeyBoard {
 
     pub fn load_rom_keymapping(&mut self, rom: String) {
         if rom == String::from("cave") {
-            self.keys_mapping.remove(&Key::X);
-            self.keys_mapping.insert(Key::S, 0x8); // Down (Z Q S D)
+            self.keys_mapping.clear();
+            
+            self.keys_mapping.insert(Key::Z, 0x2); // Up
+            self.keys_mapping.insert(Key::Q, 0x4); // Left
+            self.keys_mapping.insert(Key::S, 0x8); // Down 
+            self.keys_mapping.insert(Key::D, 0x6); // Right
+            self.keys_mapping.insert(Key::Enter, 0xF); // Start
         } else if rom == String::from("pong") {
-            self.keys_mapping.remove(&Key::T); // P1 Up
-            self.keys_mapping.remove(&Key::G); // P1 Down
+            self.keys_mapping.clear();
+
+            self.keys_mapping.insert(Key::A, 0x1); // P1 Up
+            self.keys_mapping.insert(Key::Q, 0x4); // P1 Down
             self.keys_mapping.insert(Key::P, 0xC); // P2 Up
             self.keys_mapping.insert(Key::M, 0xD); // P2 Down
         } else if rom == String::from("tetris") {
-            self.keys_mapping.remove(&Key::Q);
-            self.keys_mapping.remove(&Key::S);
-            self.keys_mapping.remove(&Key::W);
+            self.keys_mapping.clear();
+
             self.keys_mapping.insert(Key::A, 0x4); // Rotation
             self.keys_mapping.insert(Key::S, 0x7); // Down
-            self.keys_mapping.insert(Key::Q, 0x5); // Left | D => Right
+            self.keys_mapping.insert(Key::Q, 0x5); // Left
+            self.keys_mapping.insert(Key::D, 0x6); // Right
         } else if rom == String::from("wall") {
-            self.keys_mapping.remove(&Key::A);
-            self.keys_mapping.remove(&Key::Q);
+            self.keys_mapping.clear();
+
             self.keys_mapping.insert(Key::Z, 0x1); // Up
             self.keys_mapping.insert(Key::S, 0x4); // Down
         } else if rom == String::from("missile") || rom == String::from("airplane") {
-            self.keys_mapping.remove(&Key::X);
+            self.keys_mapping.clear();
+            
             self.keys_mapping.insert(Key::Space, 0x8); // Fire
         } else if rom == String::from("tank") {
-            self.keys_mapping.remove(&Key::S);
-            self.keys_mapping.remove(&Key::Z);
-            self.keys_mapping.remove(&Key::X);
+            self.keys_mapping.clear();
 
-            self.keys_mapping.insert(Key::Z, 0x8); // Up (ZQSD)
+            self.keys_mapping.insert(Key::Z, 0x8); // Up 
+            self.keys_mapping.insert(Key::Q, 0x4); // Left
             self.keys_mapping.insert(Key::S, 0x2); // Down
+            self.keys_mapping.insert(Key::D, 0x6); // Right
             self.keys_mapping.insert(Key::Space, 0x5); // Fire
+        } else if rom == String::from("tron") {
+            self.keys_mapping.clear();
+
+            self.keys_mapping.insert(Key::W, 0xB); // With Wall
+            self.keys_mapping.insert(Key::X, 0xF); // Without Wall
+
+            self.keys_mapping.insert(Key::Enter, 0x0); // Start
+
+            self.keys_mapping.insert(Key::Z, 0x1); // P1 Up 
+            self.keys_mapping.insert(Key::S, 0x4); // P1 Down
+            self.keys_mapping.insert(Key::Q, 0x3); // P1 Left
+            self.keys_mapping.insert(Key::D, 0xC); // P1 Right
+
+            self.keys_mapping.insert(Key::O, 0x7); // P2 Up 
+            self.keys_mapping.insert(Key::L, 0xA); // P2 Down
+            self.keys_mapping.insert(Key::K, 0x9); // P2 Left
+            self.keys_mapping.insert(Key::M, 0xE); // P2 Right
+        } else if rom == String::from("chipquarium") {
+            self.keys_mapping.clear();
+
+            self.keys_mapping.insert(Key::F, 0xF); // Feed
+            self.keys_mapping.insert(Key::C, 0xC); // Clean Tank
+            self.keys_mapping.insert(Key::G, 0xD); // Sleep
+            self.keys_mapping.insert(Key::B, 0xB); // rock-paper-scissors
+            self.keys_mapping.insert(Key::E, 0xE); // Stats
+
+            // rock-paper-scissors
+            self.keys_mapping.insert(Key::Up, 0x2); // Up
+            self.keys_mapping.insert(Key::Down, 0x8); // Down
         }
     }
 
